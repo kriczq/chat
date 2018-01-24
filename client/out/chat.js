@@ -1659,7 +1659,6 @@ var PS = { };
       };
   };
   var isNothing = maybe(true)(Prelude["const"](false));
-  var isJust = maybe(false)(Prelude["const"](true));
   var functorMaybe = new Prelude.Functor(function (fn) {
       return function (_2) {
           if (_2 instanceof Just) {
@@ -1674,7 +1673,6 @@ var PS = { };
   exports["Nothing"] = Nothing;
   exports["Just"] = Just;
   exports["isNothing"] = isNothing;
-  exports["isJust"] = isJust;
   exports["fromMaybe"] = fromMaybe;
   exports["maybe"] = maybe;
   exports["functorMaybe"] = functorMaybe;;
@@ -4207,6 +4205,10 @@ var PS = { };
   /* global exports */
   "use strict";
 
+  exports.length = function (s) {
+    return s.length;
+  };
+
   exports.joinWith = function (s) {
     return function (xs) {
       return xs.join(s);
@@ -4223,6 +4225,10 @@ var PS = { };
   var Data_Maybe = PS["Data.Maybe"];
   var Data_Monoid = PS["Data.Monoid"];
   var Data_String_Unsafe = PS["Data.String.Unsafe"];
+  var $$null = function (s) {
+      return $foreign.length(s) === 0;
+  };
+  exports["null"] = $$null;
   exports["joinWith"] = $foreign.joinWith;;
  
 })(PS["Data.String"] = PS["Data.String"] || {});
@@ -7356,26 +7362,17 @@ var PS = { };
   var Prelude = PS["Prelude"];
   var Control_Alt = PS["Control.Alt"];
   var Control_Bind = PS["Control.Bind"];
-  var Control_Monad = PS["Control.Monad"];
-  var Control_Monad_Rec_Class = PS["Control.Monad.Rec.Class"];
   var Control_Monad_Aff = PS["Control.Monad.Aff"];
   var Control_Monad_Aff_AVar = PS["Control.Monad.Aff.AVar"];
   var Control_Monad_Eff = PS["Control.Monad.Eff"];
   var Control_Monad_Eff_Class = PS["Control.Monad.Eff.Class"];
   var Control_Monad_Eff_Console = PS["Control.Monad.Eff.Console"];
-  var Control_Monad_Eff_Exception = PS["Control.Monad.Eff.Exception"];
-  var Control_Monad_Eff_Console_Unsafe = PS["Control.Monad.Eff.Console.Unsafe"];
-  var Control_Monad_Eff_Var = PS["Control.Monad.Eff.Var"];
   var Data_Array = PS["Data.Array"];
   var Data_Function = PS["Data.Function"];
   var Data_Maybe = PS["Data.Maybe"];
   var Data_String = PS["Data.String"];
   var DOM = PS["DOM"];
   var Halogen = PS["Halogen"];
-  var Halogen_HTML_Indexed = PS["Halogen.HTML.Indexed"];
-  var Halogen_HTML_Events_Indexed = PS["Halogen.HTML.Events.Indexed"];
-  var Halogen_HTML_Properties_Indexed = PS["Halogen.HTML.Properties.Indexed"];
-  var Halogen_Util = PS["Halogen.Util"];
   var WebSocket = PS["WebSocket"];     
   var ReceivedMessage = (function () {
       function ReceivedMessage(value0, value1) {
@@ -7525,7 +7522,7 @@ var PS = { };
           if (_15 instanceof Data_Maybe.Just) {
               return Control_Monad_Eff_Class.liftEff(Control_Monad_Aff.monadEffAff)(_15.value0.send(s));
           };
-          throw new Error("Failed pattern match at Main line 130, column 1 - line 131, column 1: " + [ s.constructor.name, _15.constructor.name ]);
+          throw new Error("Failed pattern match at Main line 133, column 1 - line 134, column 1: " + [ s.constructor.name, _15.constructor.name ]);
       };
   };
   var send$prime = function (s) {
@@ -7574,18 +7571,16 @@ var PS = { };
   };
   var ui = (function () {
       var render = function (st) {
-          return Halogen_HTML_Elements.div_([ Halogen_HTML_Elements.h1_([ Halogen_HTML.text("PF - Chat Project") ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.placeholder("Type your username here"), Halogen_HTML_Properties_Indexed.value(st.user), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(Model.SetUserName.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(Model.ConnectButton.create)) ])([ Halogen_HTML.text((function () {
-              var _24 = Data_Maybe.isJust(st.socket);
-              if (_24) {
-                  return "Disconnect";
-              };
-              if (!_24) {
-                  return "Connect";
-              };
-              throw new Error("Failed pattern match at Main line 87, column 5 - line 88, column 5: " + [ _24.constructor.name ]);
-          })()) ]) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.pre([ Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("chatbox")), Halogen_HTML_Properties_Indexed.id_("chatbox") ])([ Halogen_HTML.text(unlines(Prelude.map(Prelude.functorArray)(function (_0) {
-              return _0.content;
-          })(st.messages))) ]) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("sendbuffer")), Halogen_HTML_Properties_Indexed.placeholder("Type a message to send"), Halogen_HTML_Properties_Indexed.value(st.buffer), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(Model.SetBuffer.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Properties_Indexed.disabled(Data_Maybe.isNothing(st.socket)), Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(Model.SendMessage.create(st.buffer))) ])([ Halogen_HTML.text("Send it") ]) ]) ]);
+          var _24 = Data_String["null"](st.user);
+          if (_24) {
+              return Halogen_HTML_Elements.div_([ Halogen_HTML_Elements.h1_([ Halogen_HTML.text("PF - Chat Project") ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.placeholder("Type your username here"), Halogen_HTML_Properties_Indexed.value(st.user), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(Model.SetUserName.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(Model.ConnectButton.create)) ])([ Halogen_HTML.text("Connect") ]) ]) ]);
+          };
+          if (!_24) {
+              return Halogen_HTML_Elements.div_([ Halogen_HTML_Elements.h1_([ Halogen_HTML.text("PF - Chat Project") ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.pre([ Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("chatbox")), Halogen_HTML_Properties_Indexed.id_("chatbox") ])([ Halogen_HTML.text(unlines(Prelude.map(Prelude.functorArray)(function (_0) {
+                  return _0.content;
+              })(st.messages))) ]) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("sendbuffer")), Halogen_HTML_Properties_Indexed.placeholder("Type a message to send"), Halogen_HTML_Properties_Indexed.value(st.buffer), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(Model.SetBuffer.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Properties_Indexed.disabled(Data_Maybe.isNothing(st.socket)), Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(Model.SendMessage.create(st.buffer))) ])([ Halogen_HTML.text("Send it") ]) ]) ]);
+          };
+          throw new Error("Failed pattern match at Main line 90, column 5 - line 91, column 5: " + [ _24.constructor.name ]);
       };
       var $$eval = function (_17) {
           if (_17 instanceof Model.ConnectButton) {

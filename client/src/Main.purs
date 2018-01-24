@@ -18,7 +18,7 @@ import Control.Monad.Eff.Var (($=))
 import Data.Array (replicate,snoc)
 import Data.Function (Fn1(),runFn1)
 import Data.Maybe (Maybe(..), isJust, isNothing)
-import Data.String (joinWith)
+import Data.String (joinWith, null)
 
 import DOM (DOM())
 
@@ -44,44 +44,47 @@ ui = component render eval
   where
     render :: State -> ComponentHTML Query
     render st =
-        H.div_
-            [ H.h1_ [ H.text "PF - Chat Project" ]
-            , H.p_
-                [ H.input
-                    [ P.inputType P.InputText
-                    , P.placeholder "Type your username here"
-                    , P.value st.user
-                    , E.onValueChange (E.input SetUserName)
-                    ]
+        if (null st.user) then
+            H.div_
+                [ H.h1_ [ H.text "PF - Chat Project"]
+                , H.p_
+                    [ H.input
+                        [ P.inputType P.InputText
+                        , P.placeholder "Type your username here"
+                        , P.value st.user
+                        , E.onValueChange (E.input SetUserName)
+                        ]
 
-                , H.button
-                    [ E.onClick (E.input_ ConnectButton) ]
-                    [ H.text if isJust st.socket
-                        then "Disconnect"
-                        else "Connect"
+                    , H.button
+                        [ E.onClick (E.input_ ConnectButton) ]
+                        [ H.text "Connect"
+                        ]
                     ]
                 ]
-            , H.p_
-                [ H.pre
-                    [ P.class_ $ H.className "chatbox"
-                    , P.id_ "chatbox" ]
-                    [ H.text $ unlines $ map _.content st.messages ]
-                ]
-            , H.p_
-                [ H.input
-                    [ P.inputType P.InputText
-                    , P.class_ $ H.className "sendbuffer"
-                    , P.placeholder "Type a message to send"
-                    , P.value st.buffer
-                    , E.onValueChange (E.input SetBuffer)
+        else
+            H.div_
+                [ H.h1_ [ H.text "PF - Chat Project" ]
+                , H.p_
+                    [ H.pre
+                        [ P.class_ $ H.className "chatbox"
+                        , P.id_ "chatbox" ]
+                        [ H.text $ unlines $ map _.content st.messages ]
                     ]
-                , H.button
-                    [ P.disabled (isNothing st.socket)
-                    , E.onClick (E.input_ (SendMessage st.buffer))
+                , H.p_
+                    [ H.input
+                        [ P.inputType P.InputText
+                        , P.class_ $ H.className "sendbuffer"
+                        , P.placeholder "Type a message to send"
+                        , P.value st.buffer
+                        , E.onValueChange (E.input SetBuffer)
+                        ]
+                    , H.button
+                        [ P.disabled (isNothing st.socket)
+                        , E.onClick (E.input_ (SendMessage st.buffer))
+                        ]
+                        [ H.text "Send it" ]
                     ]
-                    [ H.text "Send it" ]
                 ]
-            ]
 
     -- eval :: Natural Query (ComponentDSL State Query (Aff (AppEffects eff)))
     eval :: Natural Query (ComponentDSL State Query (Aff (AppEffects ())))
