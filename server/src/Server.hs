@@ -48,8 +48,8 @@ application state pending = do
 
     msg <- WS.receiveData conn
     clients <- readMVar state
-    case msg of 
-        _   
+    case msg of
+        _
             | not (prefix `T.isPrefixOf` msg) ->
                 WS.sendTextData conn ("Wrong announcement" :: Text)
             | any ($ fst client)
