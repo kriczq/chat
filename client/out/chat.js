@@ -7487,7 +7487,7 @@ var PS = { };
           if (_15 instanceof Data_Maybe.Just) {
               return Control_Monad_Eff_Class.liftEff(Control_Monad_Aff.monadEffAff)(_15.value0.send(s));
           };
-          throw new Error("Failed pattern match at Main line 167, column 1 - line 168, column 1: " + [ s.constructor.name, _15.constructor.name ]);
+          throw new Error("Failed pattern match at Main line 168, column 1 - line 169, column 1: " + [ s.constructor.name, _15.constructor.name ]);
       };
   };
   var send$prime = function (s) {
@@ -7536,7 +7536,7 @@ var PS = { };
   };
   var ui = (function () {
       var render = function (st) {
-          return Halogen_HTML_Elements.div_([ Halogen_HTML_Elements.h1_([ Halogen_HTML.text("PF - Chat Project") ]), Halogen_HTML_Elements.p_([ Halogen_HTML.text("Your Username here\n"), Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.value(st.user), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(SetUserName.create)) ]), Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.value(st.chatServerUrl), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(SetUrl.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(ConnectButton.create)) ])([ Halogen_HTML.text((function () {
+          return Halogen_HTML_Elements.div_([ Halogen_HTML_Elements.h1_([ Halogen_HTML.text("PF - Chat Project") ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.placeholder("Type your username here"), Halogen_HTML_Properties_Indexed.value(st.user), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(SetUserName.create)) ]), Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.value(st.chatServerUrl), Halogen_HTML_Properties_Indexed.placeholder("Type server URL here, ws://..."), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(SetUrl.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(ConnectButton.create)) ])([ Halogen_HTML.text((function () {
               var _24 = Data_Maybe.isJust(st.socket);
               if (_24) {
                   return "Disconnect";
@@ -7544,10 +7544,10 @@ var PS = { };
               if (!_24) {
                   return "Connect";
               };
-              throw new Error("Failed pattern match at Main line 124, column 5 - line 125, column 5: " + [ _24.constructor.name ]);
+              throw new Error("Failed pattern match at Main line 125, column 5 - line 126, column 5: " + [ _24.constructor.name ]);
           })()) ]) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.pre([ Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("chatbox")), Halogen_HTML_Properties_Indexed.id_("chatbox") ])([ Halogen_HTML.text(unlines(Prelude.map(Prelude.functorArray)(function (_0) {
               return _0.content;
-          })(st.messages))) ]) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("sendbuffer")), Halogen_HTML_Properties_Indexed.placeholder("Type a message to send"), Halogen_HTML_Properties_Indexed.value(st.buffer), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(SetBuffer.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Properties_Indexed.disabled(Data_Maybe.isNothing(st.socket)), Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(SendMessage.create(st.buffer))) ])([ Halogen_HTML.text("Send") ]) ]) ]);
+          })(st.messages))) ]) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("sendbuffer")), Halogen_HTML_Properties_Indexed.placeholder("Type a message to send"), Halogen_HTML_Properties_Indexed.value(st.buffer), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(SetBuffer.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Properties_Indexed.disabled(Data_Maybe.isNothing(st.socket)), Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(SendMessage.create(st.buffer))) ])([ Halogen_HTML.text("Send it") ]) ]) ]);
       };
       var $$eval = function (_17) {
           if (_17 instanceof ConnectButton) {
@@ -7574,7 +7574,7 @@ var PS = { };
               }))(function () {
                   return Prelude.bind(Control_Monad_Free.freeBind)(Halogen_Query["liftAff'"](Control_Monad_Aff_Class.monadAffAff)(log$prime("got a connection!")))(function () {
                       return Prelude.bind(Control_Monad_Free.freeBind)(Halogen_Query.get)(function (_11) {
-                          return Prelude.bind(Control_Monad_Free.freeBind)(send$prime("Hi! I am " + _11.user)(_11.socket))(function () {
+                          return Prelude.bind(Control_Monad_Free.freeBind)(send$prime(_11.user)(_11.socket))(function () {
                               return Prelude.pure(Control_Monad_Free.freeApplicative)(_17.value1);
                           });
                       });
@@ -7683,8 +7683,8 @@ var PS = { };
       return Prelude.bind(Control_Monad_Aff.bindAff)(Halogen_Driver.runUI(ui)({
           messages: [  ], 
           buffer: "", 
-          user: "Anonymous", 
-          chatServerUrl: "ws://localhost:9160", 
+          user: "", 
+          chatServerUrl: "", 
           socket: Data_Maybe.Nothing.value, 
           queryChan: _14
       }))(function (_13) {

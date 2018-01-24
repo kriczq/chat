@@ -80,15 +80,16 @@ ui = component render eval
         H.div_
             [ H.h1_ [ H.text "PF - Chat Project" ]
             , H.p_
-                [ H.text "Your Username here\n"
-                , H.input
+                [ H.input
                     [ P.inputType P.InputText
+                    , P.placeholder "Type your username here"
                     , P.value st.user
                     , E.onValueChange (E.input SetUserName)
                     ]
                 , H.input
                     [ P.inputType P.InputText
                     , P.value st.chatServerUrl
+                    , P.placeholder "Type server URL here, ws://..."
                     , E.onValueChange (E.input SetUrl)
                     ]
                 , H.button
@@ -116,7 +117,7 @@ ui = component render eval
                     [ P.disabled (isNothing st.socket)
                     , E.onClick (E.input_ (SendMessage st.buffer))
                     ]
-                    [ H.text "Send" ]
+                    [ H.text "Send it" ]
                 ]
             ]
 
@@ -131,7 +132,7 @@ ui = component render eval
         modify _ { socket = Just conn }
         liftAff' $ log' "got a connection!"
         st <- get
-        send' ("Hi! I am " <> st.user) st.socket
+        send' st.user st.socket
         pure next
     eval (Disconnect next) = do
         modify _ { socket = Nothing }
@@ -221,8 +222,8 @@ main = do
         chan <- makeVar
         app <- runUI ui { messages: []
                         , buffer: ""
-                        , user: "Anonymous"
-                        , chatServerUrl: "ws://localhost:9160"
+                        , user: ""
+                        , chatServerUrl: ""
                         , socket: Nothing
                         , queryChan: chan
                         }
