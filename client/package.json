@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "postinstall": "pulp dep install",
+    "build": "pulp browserify --optimise --to out/chat.js",
+    "watch": "pulp -w browserify --to out/chat.js"
+  },
+  "dependencies": {
+    "virtual-dom": "^2.1.1"
+  },
+  "devDependencies": {
+    "pulp": "^7.0.0",
+    "purescript": "^0.7.6"
+  }
+}
