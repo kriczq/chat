@@ -30,40 +30,7 @@ import Halogen.Util (appendToBody, onLoad)
 
 import WebSocket
 
--- | The state of the component.
-type State = { messages :: Array ChatMessage
-             , buffer :: String
-             , user :: User
-             , socket :: Maybe Connection
-             , chatServerUrl :: String
-             , queryChan :: AVar (Query Unit)
-             }
-
-type ChatMessage = { content :: String
-                   -- a real app would probably store other stuff here
-                   }
-type User = String
-
--- | The effects used in the app.
-type AppEffects eff = HalogenEffects ( console :: CONSOLE
-                                     , ws :: WEBSOCKET
-                                     | eff
-                                     )
-
--- | The component query algebra.
-data Query a
-  = ReceivedMessage String a
-  | SendMessage String a
-  | SetBuffer String a
-  | SetUrl String a
-  | SetUserName String a
-  | ConnectButton a
-  | Connect Connection a
-  | Disconnect a
-
--- for some reason this first def for AppDriver won't typecheck
--- type AppDriver = Driver Query (AppEffects ())
-type AppDriver = Query Unit -> Aff (AppEffects ()) Unit
+import Model
 
 -- | Didn't seem worth an extra bower import
 unlines :: Array String -> String
@@ -86,12 +53,7 @@ ui = component render eval
                     , P.value st.user
                     , E.onValueChange (E.input SetUserName)
                     ]
-                , H.input
-                    [ P.inputType P.InputText
-                    , P.value st.chatServerUrl
-                    , P.placeholder "Type server URL here, ws://..."
-                    , E.onValueChange (E.input SetUrl)
-                    ]
+
                 , H.button
                     [ E.onClick (E.input_ ConnectButton) ]
                     [ H.text if isJust st.socket
@@ -195,7 +157,7 @@ makeSocket driver url = do
 
         socket.onopen $= \event -> do
             logAny event
-            log "onopen: Connection opened"
+            log "onopen: Connection is opened"
             quietLaunchAff $ driver $ action $ Connect conn
 
         socket.onmessage $= \event -> do
@@ -206,7 +168,7 @@ makeSocket driver url = do
 
         socket.onclose $= \event -> do
             logAny event
-            log "onclose: Connection closed"
+            log "onclose: Connection is closed"
             quietLaunchAff $ driver $ action $ Disconnect
 
     pure unit
@@ -223,7 +185,7 @@ main = do
         app <- runUI ui { messages: []
                         , buffer: ""
                         , user: ""
-                        , chatServerUrl: ""
+                        , chatServerUrl: "ws://localhost:9160"
                         , socket: Nothing
                         , queryChan: chan
                         }
