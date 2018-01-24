@@ -72,12 +72,24 @@ application state pending = do
                     let s' = removeClient client s in return (s', s')
                 broadcast (fst client `mappend` " disconnected") s
 
-                    
+{-direct :: Text -> Text -> ServerState -> IO ()
+sendDirectMessage user message clients = do
+    let recipient = words (T.unpack msg) !! 1
+    let client = find (\(name, _) -> T.unpack name == recipient) clients
+
+    case client of
+    Nothing -> broadcast
+        ("SYSTEM: " `mappend` user `mappend` " is so stupid. She or he wanna send message to user that does not exist 😳") clients
+    Just (_, conn) ->
+        WS.sendTextData conn (user `mappend` " directly to you: " `mappend` T.pack (drop (8 + length (T.unpack user)) (T.unpack msg)))
+-}
+
 receive :: WS.Connection -> MVar ServerState -> Client -> IO ()
 receive conn state (user, _) = forever $ do
     msg <- WS.receiveData conn
     clients <- readMVar state
     case msg of
-        _   | T.toLower msg == ("!users" :: Text) -> WS.sendTextData conn $ "Active users: " `mappend` T.intercalate "," (map fst clients)
+        _   | T.toLower msg == ("!users" :: Text) -> WS.sendTextData conn $ "Active users: " `mappend` T.intercalate ", " (map fst clients)
+            | ("@" `T.isPrefixOf` msg) -> readMVar state >>= broadcast (user `mappend` " to you:" `mappend` T.dropWhile (/= ' ') msg)
             | otherwise -> readMVar state >>= broadcast
                 (user `mappend` ": " `mappend` msg)
