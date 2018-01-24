@@ -1,10 +1,10 @@
 name:                server
-version:             0.1.0.0
-github:              "githubuser/server"
+version:             1.0.0.0
+github:              "kriczq/chat"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
+author:              "W. Koza & M. Szarek"
+maintainer:          "W. Koza & M. Szarek"
+copyright:           "2018 W. Koza & M. Szarek"
 
 extra-source-files:
 - README.md
