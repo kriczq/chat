@@ -44,7 +44,7 @@ ui = component render eval
   where
     render :: State -> ComponentHTML Query
     render st =
-        if (null st.user) then
+        if (isNothing st.socket) then
             H.div_
                 [ H.h1_ [ H.text "PF - Chat Project"]
                 , H.p_
@@ -54,11 +54,9 @@ ui = component render eval
                         , P.value st.user
                         , E.onValueChange (E.input SetUserName)
                         ]
-
                     , H.button
-                        [ E.onClick (E.input_ ConnectButton) ]
-                        [ H.text "Connect"
-                        ]
+                        [ E.onClick (E.input_ ConnectButton)]
+                        [ H.text "Connect"]
                     ]
                 ]
         else
