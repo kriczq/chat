@@ -30,7 +30,6 @@ addClient client clients = client : clients
 removeClient :: Client -> ServerState -> ServerState
 removeClient client = filter ((/= fst client) . fst)
 
-
 broadcast :: Text -> ServerState -> IO ()
 broadcast message clients = do
     T.putStrLn message
@@ -64,7 +63,7 @@ application state pending = do
                        T.intercalate "," (map fst s)
                    broadcast (fst client `mappend` " joined") s'
                    return s'
-               talk conn state client
+               receive conn state client
           where
             client     = (msg, conn)
             disconnect = do
@@ -73,9 +72,12 @@ application state pending = do
                     let s' = removeClient client s in return (s', s')
                 broadcast (fst client `mappend` " disconnected") s
 
-
-talk :: WS.Connection -> MVar ServerState -> Client -> IO ()
-talk conn state (user, _) = forever $ do
+                    
+receive :: WS.Connection -> MVar ServerState -> Client -> IO ()
+receive conn state (user, _) = forever $ do
     msg <- WS.receiveData conn
-    readMVar state >>= broadcast
-        (user `mappend` ": " `mappend` msg)
+    clients <- readMVar state
+    case msg of
+        _   | T.toLower msg == ("!users" :: Text) -> WS.sendTextData conn $ "Active users: " `mappend` T.intercalate "," (map fst clients)
+            | otherwise -> readMVar state >>= broadcast
+                (user `mappend` ": " `mappend` msg)
