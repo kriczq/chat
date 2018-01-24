@@ -12,7 +12,7 @@ import qualified Data.Text.IO as T
 import qualified Network.WebSockets as WS
 
 type Client = (Text, WS.Connection)
-type ServerState = [Client
+type ServerState = [Client]
 
 newServerState :: ServerState
 newServerState = []
@@ -22,6 +22,7 @@ numClients = length
 
 clientExists :: Client -> ServerState -> Bool
 clientExists client = any ((== fst client) . fst)
+
 
 addClient :: Client -> ServerState -> ServerState
 addClient client clients = client : clients
@@ -41,36 +42,31 @@ run = do
     WS.runServer "127.0.0.1" 9160 $ application state
 
 application :: MVar ServerState -> WS.ServerApp
-
 application state pending = do
     conn <- WS.acceptRequest pending
-    WS.forkPingThread conn 30
+    WS.forkPingThread conn 10
 
     msg <- WS.receiveData conn
     clients <- readMVar state
     case msg of
         _
-            | not (prefix `T.isPrefixOf` msg) ->
-                WS.sendTextData conn ("Wrong announcement" :: Text)
             | any ($ fst client)
                 [T.null, T.any isPunctuation, T.any isSpace] ->
-                    WS.sendTextData conn ("Name cannot " `mappend`
+                    WS.sendTextData conn ("err:Name cannot " `mappend`
                         "contain punctuation or whitespace, and " `mappend`
                         "cannot be empty" :: Text)
             | clientExists client clients ->
-                WS.sendTextData conn ("User already exists" :: Text)
+                WS.sendTextData conn ("err:User already exists" :: Text)
             | otherwise -> flip finally disconnect $ do
                modifyMVar_ state $ \s -> do
                    let s' = addClient client s
                    WS.sendTextData conn $
-                       "Welcome! Users: " `mappend`
-                       T.intercalate ", " (map fst s)
+                       T.intercalate "," (map fst s)
                    broadcast (fst client `mappend` " joined") s'
                    return s'
                talk conn state client
           where
-            prefix     = "Hi! I am "
-            client     = (T.drop (T.length prefix) msg, conn)
+            client     = (msg, conn)
             disconnect = do
                 -- Remove client and return new state
                 s <- modifyMVar state $ \s ->
