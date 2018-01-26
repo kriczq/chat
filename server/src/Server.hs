@@ -11,29 +11,7 @@ import Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Network.WebSockets as WS
-
-type Client = (Text, WS.Connection)
-type ServerState = [Client]
-
--- | generate empty state of server
-newServerState :: ServerState
-newServerState = []
-
--- | returns number of connections based on server state
-numClients :: ServerState -> Int
-numClients = length
-
--- | checks if the client appepar on server state list
-clientExists :: Client -> ServerState -> Bool
-clientExists client = any ((== fst client) . fst)
-
--- | adds client to server state
-addClient :: Client -> ServerState -> ServerState
-addClient client clients = client : clients
-
--- | removes clients from server state
-removeClient :: Client -> ServerState -> ServerState
-removeClient client = filter ((/= fst client) . fst)
+import Model
 
 -- | send message to all connected clients
 broadcast :: Text -> ServerState -> IO ()
