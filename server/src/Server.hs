@@ -12,6 +12,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Network.WebSockets as WS
 import Model
+import ClientOp
 
 -- | send message to all connected clients
 broadcast :: Text -> ServerState -> IO ()
