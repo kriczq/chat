@@ -23,7 +23,7 @@ newServerState = []
 numClients :: ServerState -> Int
 numClients = length
 
--- | 
+-- | checks if the client appepar on server state list
 clientExists :: Client -> ServerState -> Bool
 clientExists client = any ((== fst client) . fst)
 
@@ -80,7 +80,7 @@ application state pending = do
                     let s' = removeClient client s in return (s', s')
                 broadcast (fst client `mappend` " disconnected") s
 
--- | 
+-- | listening for messages
 receive :: WS.Connection -> MVar ServerState -> Client -> IO ()
 receive conn state (user, _) = forever $ do
     msg <- WS.receiveData conn
