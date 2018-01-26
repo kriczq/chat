@@ -105,4 +105,7 @@ sendDirectMessage (user, conn) who msg state = do
         Nothing ->
             WS.sendTextData conn $ "shiet: user " `mappend` who `mappend` " doesnt exist"
         Just (_, who_conn) ->
-            WS.sendTextData who_conn (user `mappend` " to you: ")
+            if T.length msg == 0 then
+                WS.sendTextData who_conn (user `mappend` " is pinging you")
+            else
+                WS.sendTextData who_conn (user `mappend` " to you: " `mappend` msg)
