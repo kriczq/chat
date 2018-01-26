@@ -47,7 +47,7 @@ run = do
     state <- newMVar newServerState
     WS.runServer "127.0.0.1" 9160 $ application state
 
-
+-- | new connection
 application :: MVar ServerState -> WS.ServerApp
 application state pending = do
     conn <- WS.acceptRequest pending
