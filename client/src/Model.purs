@@ -1,5 +1,5 @@
 module Model where
-  
+
 import Prelude
 
 import Control.Alt ((<|>))
@@ -43,9 +43,9 @@ type AppEffects eff = HalogenEffects ( console :: CONSOLE
 
 
 data Query a
-  = ReceivedMessage String a
-  | SendMessage String a
-  | SetBuffer String a
+  = RecMsg String a
+  | SendMsg String a
+  | SetBuf String a
   | SetUrl String a
   | SetUserName String a
   | ConnectButton a

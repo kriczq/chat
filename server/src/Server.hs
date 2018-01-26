@@ -38,7 +38,7 @@ broadcast message clients = do
 run :: IO ()
 run = do
     state <- newMVar newServerState
-    WS.runServer "127.0.0.1" 9160 $ application state
+    WS.runServer "172.20.10.5" 9160 $ application state
 
 application :: MVar ServerState -> WS.ServerApp
 application state pending = do
@@ -100,7 +100,7 @@ receive conn state (user, _) = forever $ do
 sendDirectMessage :: Client -> Text -> Text -> ServerState -> IO ()
 sendDirectMessage (user, conn) who msg state = do
     let client = find (\(user, _) -> user == who) state
-    
+
     case client of
         Nothing ->
             WS.sendTextData conn $ "shiet: user " `mappend` who `mappend` " doesnt exist"

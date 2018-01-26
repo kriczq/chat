@@ -7366,41 +7366,41 @@ var PS = { };
   var DOM = PS["DOM"];
   var Halogen = PS["Halogen"];
   var WebSocket = PS["WebSocket"];     
-  var ReceivedMessage = (function () {
-      function ReceivedMessage(value0, value1) {
+  var RecMsg = (function () {
+      function RecMsg(value0, value1) {
           this.value0 = value0;
           this.value1 = value1;
       };
-      ReceivedMessage.create = function (value0) {
+      RecMsg.create = function (value0) {
           return function (value1) {
-              return new ReceivedMessage(value0, value1);
+              return new RecMsg(value0, value1);
           };
       };
-      return ReceivedMessage;
+      return RecMsg;
   })();
-  var SendMessage = (function () {
-      function SendMessage(value0, value1) {
+  var SendMsg = (function () {
+      function SendMsg(value0, value1) {
           this.value0 = value0;
           this.value1 = value1;
       };
-      SendMessage.create = function (value0) {
+      SendMsg.create = function (value0) {
           return function (value1) {
-              return new SendMessage(value0, value1);
+              return new SendMsg(value0, value1);
           };
       };
-      return SendMessage;
+      return SendMsg;
   })();
-  var SetBuffer = (function () {
-      function SetBuffer(value0, value1) {
+  var SetBuf = (function () {
+      function SetBuf(value0, value1) {
           this.value0 = value0;
           this.value1 = value1;
       };
-      SetBuffer.create = function (value0) {
+      SetBuf.create = function (value0) {
           return function (value1) {
-              return new SetBuffer(value0, value1);
+              return new SetBuf(value0, value1);
           };
       };
-      return SetBuffer;
+      return SetBuf;
   })();
   var SetUrl = (function () {
       function SetUrl(value0, value1) {
@@ -7456,9 +7456,9 @@ var PS = { };
       };
       return Disconnect;
   })();
-  exports["ReceivedMessage"] = ReceivedMessage;
-  exports["SendMessage"] = SendMessage;
-  exports["SetBuffer"] = SetBuffer;
+  exports["RecMsg"] = RecMsg;
+  exports["SendMsg"] = SendMsg;
+  exports["SetBuf"] = SetBuf;
   exports["SetUrl"] = SetUrl;
   exports["SetUserName"] = SetUserName;
   exports["ConnectButton"] = ConnectButton;
@@ -7479,9 +7479,6 @@ var PS = { };
   var Halogen_Component = PS["Halogen.Component"];
   var Halogen_Driver = PS["Halogen.Driver"];
   var Prelude = PS["Prelude"];
-  var Control_Alt = PS["Control.Alt"];
-  var Control_Bind = PS["Control.Bind"];
-  var Control_Monad = PS["Control.Monad"];
   var Control_Monad_Rec_Class = PS["Control.Monad.Rec.Class"];
   var Control_Monad_Aff = PS["Control.Monad.Aff"];
   var Control_Monad_Aff_AVar = PS["Control.Monad.Aff.AVar"];
@@ -7514,7 +7511,7 @@ var PS = { };
           if (_15 instanceof Data_Maybe.Just) {
               return Control_Monad_Eff_Class.liftEff(Control_Monad_Aff.monadEffAff)(_15.value0.send(s));
           };
-          throw new Error("Failed pattern match at Main line 131, column 1 - line 132, column 1: " + [ s.constructor.name, _15.constructor.name ]);
+          throw new Error("Failed pattern match at Main line 117, column 1 - line 118, column 1: " + [ s.constructor.name, _15.constructor.name ]);
       };
   };
   var send$prime = function (s) {
@@ -7540,7 +7537,7 @@ var PS = { };
                       Control_Monad_Eff_Console_Unsafe.logAny(event)();
                       var received = WebSocket.runMessage(WebSocket.runMessageEvent(event));
                       Control_Monad_Eff_Console.log("onmessage: Received '" + (received + "'"))();
-                      return quietLaunchAff(driver(Halogen_Query.action(Model.ReceivedMessage.create(received))))();
+                      return quietLaunchAff(driver(Halogen_Query.action(Model.RecMsg.create(received))))();
                   };
               })();
               return Control_Monad_Eff_Var["$="](Control_Monad_Eff_Var.settableSettableVar)(_12.onclose)(function (event) {
@@ -7568,11 +7565,11 @@ var PS = { };
               return Halogen_HTML_Elements.div_([ Halogen_HTML_Elements.h1_([ Halogen_HTML.text("PF - Chat Project") ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.placeholder("Type your username here"), Halogen_HTML_Properties_Indexed.value(st.user), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(Model.SetUserName.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(Model.ConnectButton.create)) ])([ Halogen_HTML.text("Connect") ]) ]) ]);
           };
           if (!_24) {
-              return Halogen_HTML_Elements.div_([ Halogen_HTML_Elements.h1_([ Halogen_HTML.text("PF - Chat Project") ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.pre([ Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("chatbox")), Halogen_HTML_Properties_Indexed.id_("chatbox") ])([ Halogen_HTML.text(unlines(Prelude.map(Prelude.functorArray)(function (_0) {
+              return Halogen_HTML_Elements.div_([ Halogen_HTML_Elements.h1_([ Halogen_HTML.text("PF - Chat Project") ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.pre([ Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("msgbox")), Halogen_HTML_Properties_Indexed.id_("msgbox") ])([ Halogen_HTML.text(unlines(Prelude.map(Prelude.functorArray)(function (_0) {
                   return _0.content;
-              })(st.messages))) ]) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("sendbuffer")), Halogen_HTML_Properties_Indexed.placeholder("Type a message to send"), Halogen_HTML_Properties_Indexed.value(st.buffer), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(Model.SetBuffer.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Properties_Indexed.disabled(Data_Maybe.isNothing(st.socket)), Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(Model.SendMessage.create(st.buffer))) ])([ Halogen_HTML.text("Send it") ]) ]) ]);
+              })(st.messages))) ]) ]), Halogen_HTML_Elements.p_([ Halogen_HTML_Elements_Indexed.input([ Halogen_HTML_Properties_Indexed.inputType(Halogen_HTML_Properties_Indexed.InputText.value), Halogen_HTML_Properties_Indexed.class_(Halogen_HTML_Core.className("sendbuffer")), Halogen_HTML_Properties_Indexed.placeholder("Type a message to send"), Halogen_HTML_Properties_Indexed.value(st.buffer), Halogen_HTML_Events_Indexed.onValueChange(Halogen_HTML_Events.input(Model.SetBuf.create)) ]), Halogen_HTML_Elements_Indexed.button([ Halogen_HTML_Properties_Indexed.disabled(Data_Maybe.isNothing(st.socket)), Halogen_HTML_Events_Indexed.onClick(Halogen_HTML_Events.input_(Model.SendMsg.create(st.buffer))) ])([ Halogen_HTML.text("Send it") ]) ]) ]);
           };
-          throw new Error("Failed pattern match at Main line 88, column 5 - line 89, column 5: " + [ _24.constructor.name ]);
+          throw new Error("Failed pattern match at Main line 79, column 5 - line 80, column 5: " + [ _24.constructor.name ]);
       };
       var $$eval = function (_17) {
           if (_17 instanceof Model.ConnectButton) {
@@ -7622,7 +7619,7 @@ var PS = { };
                   });
               });
           };
-          if (_17 instanceof Model.ReceivedMessage) {
+          if (_17 instanceof Model.RecMsg) {
               return Prelude.bind(Control_Monad_Free.freeBind)(Halogen_Query.modify(function (st) {
                   var _37 = {};
                   for (var _38 in st) {
@@ -7635,12 +7632,12 @@ var PS = { };
                   });
                   return _37;
               }))(function () {
-                  return Prelude.bind(Control_Monad_Free.freeBind)(Halogen_Query["liftEff'"](Control_Monad_Aff.monadEffAff)(scrollBottom("chatbox")))(function () {
+                  return Prelude.bind(Control_Monad_Free.freeBind)(Halogen_Query["liftEff'"](Control_Monad_Aff.monadEffAff)(scrollBottom("box")))(function () {
                       return Prelude.pure(Control_Monad_Free.freeApplicative)(_17.value1);
                   });
               });
           };
-          if (_17 instanceof Model.SendMessage) {
+          if (_17 instanceof Model.SendMsg) {
               return Prelude.bind(Control_Monad_Free.freeBind)(Halogen_Query.modify(function (_4) {
                   var _41 = {};
                   for (var _42 in _4) {
@@ -7658,7 +7655,7 @@ var PS = { };
                   });
               });
           };
-          if (_17 instanceof Model.SetBuffer) {
+          if (_17 instanceof Model.SetBuf) {
               return Prelude.bind(Control_Monad_Free.freeBind)(Halogen_Query.modify(function (_6) {
                   var _45 = {};
                   for (var _46 in _6) {
@@ -7700,7 +7697,7 @@ var PS = { };
                   return Prelude.pure(Control_Monad_Free.freeApplicative)(_17.value1);
               });
           };
-          throw new Error("Failed pattern match at Main line 42, column 1 - line 43, column 1: " + [ _17.constructor.name ]);
+          throw new Error("Failed pattern match at Main line 34, column 1 - line 35, column 1: " + [ _17.constructor.name ]);
       };
       return Halogen_Component.component(render)($$eval);
   })();
@@ -7709,7 +7706,7 @@ var PS = { };
           messages: [  ], 
           buffer: "", 
           user: "", 
-          chatServerUrl: "ws://localhost:9160", 
+          chatServerUrl: "ws://172.20.10.5:9160", 
           socket: Data_Maybe.Nothing.value, 
           queryChan: _14
       }))(function (_13) {
