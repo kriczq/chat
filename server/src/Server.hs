@@ -4,6 +4,7 @@ module Server (run) where
 import Data.Char (isPunctuation, isSpace)
 import Data.Monoid (mappend)
 import Data.Text (Text)
+import Data.List (find)
 import Control.Exception (finally)
 import Control.Monad (forM_, forever)
 import Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
@@ -22,7 +23,6 @@ numClients = length
 
 clientExists :: Client -> ServerState -> Bool
 clientExists client = any ((== fst client) . fst)
-
 
 addClient :: Client -> ServerState -> ServerState
 addClient client clients = client : clients
@@ -90,6 +90,19 @@ receive conn state (user, _) = forever $ do
     clients <- readMVar state
     case msg of
         _   | T.toLower msg == ("!users" :: Text) -> WS.sendTextData conn $ "Active users: " `mappend` T.intercalate ", " (map fst clients)
-            | ("@" `T.isPrefixOf` msg) -> readMVar state >>= broadcast (user `mappend` " to you:" `mappend` T.dropWhile (/= ' ') msg)
+            | ("@" `T.isPrefixOf` msg) -> do
+                let who = T.drop 1 (T.takeWhile (/= ' ') msg)
+                readMVar state >>= sendDirectMessage (user, conn) who (T.drop (T.length who + 1) msg)
             | otherwise -> readMVar state >>= broadcast
                 (user `mappend` ": " `mappend` msg)
+
+
+sendDirectMessage :: Client -> Text -> Text -> ServerState -> IO ()
+sendDirectMessage (user, conn) who msg state = do
+    let client = find (\(user, _) -> user == who) state
+    
+    case client of
+        Nothing ->
+            WS.sendTextData conn $ "shiet: user " `mappend` who `mappend` " doesnt exist"
+        Just (_, who_conn) ->
+            WS.sendTextData who_conn (user `mappend` " to you: ")
