@@ -21,27 +21,24 @@ import Halogen
 
 import WebSocket
 
--- | The state of the component.
+-- the state of the component
 type State = { messages :: Array ChatMessage
              , buffer :: String
-             , user :: User
+             , user :: String
              , socket :: Maybe Connection
              , chatServerUrl :: String
              , queryChan :: AVar (Query Unit)
              }
-
+ -- basic type for message, we can evaluate it in future
 type ChatMessage = { content :: String}
 
-
-type User = String
-
-
+-- Type connected with HalogenEffects from Halogen Framework
 type AppEffects eff = HalogenEffects ( console :: CONSOLE
                                      , ws :: WEBSOCKET
                                      | eff
                                      )
 
-
+-- Query type for native effects on our site
 data Query a
   = RecMsg String a
   | SendMsg String a
@@ -52,5 +49,5 @@ data Query a
   | Connect Connection a
   | Disconnect a
 
-
+-- Type to implement site driver
 type AppDriver = Query Unit -> Aff (AppEffects ()) Unit

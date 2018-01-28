@@ -28,12 +28,14 @@ import WebSocket
 
 import Model
 
-unlines :: Array String -> String
-unlines = joinWith "\n"
+-- concatenates array of string to display in chatbox
+concatenate :: Array String -> String
+concatenate = joinWith "\n"
 
+-- Function responsible for rendering site components
 ui :: Component State Query (Aff (AppEffects ()))
 ui = component render eval
-  where
+  where -- render site components
     render :: State -> ComponentHTML Query
     render st =
         if (isNothing st.socket) then
@@ -58,7 +60,7 @@ ui = component render eval
                     [ H.pre
                         [ P.class_ $ H.className "msgbox"
                         , P.id_ "msgbox" ]
-                        [ H.text $ unlines $ map _.content st.messages ]
+                        [ H.text $ concatenate $ map _.content st.messages ]
                     ]
                 , H.p_
                     [ H.input
@@ -75,10 +77,10 @@ ui = component render eval
                         [ H.text "Send it" ]
                     ]
                 ]
-
+    -- evaluates queries on the site
     eval :: Natural Query (ComponentDSL State Query (Aff (AppEffects ())))
     eval (ConnectButton next) = do
-        driver <- makeAuxDriver <$> get
+        driver <- makeDriver <$> get
         url <- URL <$> gets _.chatServerUrl
         liftAff' $ makeSocket driver url
         pure next
@@ -94,7 +96,7 @@ ui = component render eval
         pure next
     eval (RecMsg content next) = do
         modify \st -> st { messages = st.messages `snoc` {content: content}}
-        liftEff' $ scrollBottom "box"
+        liftEff' $ scrollAtBottom "box"
         pure next
     eval (SendMsg content next) = do
         modify _ { buffer = "" }
@@ -110,23 +112,29 @@ ui = component render eval
         modify _ { user = user }
         pure next
 
+-- Function responsible for scrolling at bottom of chat after receiving message
 foreign import scrollBottomImpl :: forall e. Fn1 String (Eff (dom :: DOM | e) Unit)
-scrollBottom :: forall e. String -> Eff (dom :: DOM | e) Unit
-scrollBottom = runFn1 scrollBottomImpl
+scrollAtBottom :: forall e. String -> Eff (dom :: DOM | e) Unit
+scrollAtBottom = runFn1 scrollBottomImpl
 
+-- Function responsible for sending messages
 send :: forall eff. String -> Maybe Connection -> Aff (ws :: WEBSOCKET | eff) Unit
 send _ Nothing                    = pure unit
 send s (Just (Connection socket)) = liftEff $ socket.send $ Message s
 
+-- Improved send, able to work asynchronously
 send' :: forall eff. String -> Maybe Connection -> ComponentDSL State Query (Aff (ws :: WEBSOCKET | eff)) Unit
 send' s c = liftAff' $ send s c
 
+-- As above, improved log function, able to work asynchronously
 log' :: forall eff. String -> Aff (console :: CONSOLE | eff) Unit
 log' = liftEff <<< log
 
-makeAuxDriver :: forall r. {queryChan :: AVar (Query Unit) | r} -> AppDriver
-makeAuxDriver {queryChan=chan} = putVar chan
+-- Asynchronous driver for our Chat
+makeDriver :: forall r. {queryChan :: AVar (Query Unit) | r} -> AppDriver
+makeDriver {queryChan=chan} = putVar chan
 
+-- Open socket connection
 makeSocket :: forall eff. AppDriver -> URL -> Aff (avar :: AVAR, ws :: WEBSOCKET | eff) Unit
 makeSocket driver url = do
     liftEff do
@@ -149,10 +157,11 @@ makeSocket driver url = do
 
     pure unit
 
-
+-- Launch quietly asynchronous effects on site
 quietLaunchAff :: forall eff a. Aff eff a -> Eff eff Unit
 quietLaunchAff = runAff (const (pure unit)) (const (pure unit))
 
+-- Main function in our client
 main :: Eff (AppEffects ()) Unit
 main = do
     runAff throwException (const (pure unit)) $ do
