@@ -1,4 +1,4 @@
-module ClientOp where
+module ClientOp (newServerState, numClients, clientExists, addClient, removeClient) where
 
 import Model
 

@@ -1,4 +1,4 @@
-module Model where
+module Model (Client, ServerState) where
 
 import Data.Text (Text)
 import qualified Network.WebSockets as WS
