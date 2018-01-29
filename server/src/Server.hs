@@ -24,7 +24,7 @@ broadcast message clients = do
 run :: IO ()
 run = do
     state <- newMVar newServerState
-    WS.runServer "172.20.10.5" 9160 $ application state
+    WS.runServer "localhost" 9160 $ application state
 
 -- | new connection
 application :: MVar ServerState -> WS.ServerApp

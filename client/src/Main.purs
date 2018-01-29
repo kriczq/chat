@@ -169,7 +169,7 @@ main = do
         app <- runUI ui { messages: []
                         , buffer: ""
                         , user: ""
-                        , chatServerUrl: "ws://172.20.10.5:9160"
+                        , chatServerUrl: "ws://localhost:9160"
                         , socket: Nothing
                         , queryChan: chan
                         }
